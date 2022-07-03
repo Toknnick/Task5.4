@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Task5._4
@@ -8,9 +8,9 @@ namespace Task5._4
         static void Main(string[] args)
         {
             bool isWork = true;
-            int keyOfDictionary = 0;
-            Dictionary<int, string> fullNames = new Dictionary<int, string>();
-            Dictionary<int, string> jobs = new Dictionary<int, string>();
+            int index = 0;
+            List<string> fullName = new List<string>();
+            List<string> job = new List<string>();
 
             while (isWork)
             {
@@ -20,14 +20,14 @@ namespace Task5._4
                 switch (state)
                 {
                     case "1":
-                        AddFile(fullNames, jobs, keyOfDictionary, "Введите ФИО:", "Введите должность:");
-                        keyOfDictionary++;
+                        AddFile(fullName, job);
+                        index++;
                         break;
                     case "2":
-                        ViewFile(fullNames, jobs);
+                        ViewFile(fullName, job);
                         break;
                     case "3":
-                        DeleteFile(fullNames, jobs);
+                        DeleteFile(fullName, job);
                         break;
                     case "4":
                         isWork = false;
@@ -39,71 +39,50 @@ namespace Task5._4
             }
         }
 
-        static void AddFile(Dictionary<int, string> fullNames, Dictionary<int, string> jobs, int keyOfDictionary, string text1, string text2)
+        static void AddFile(List<string> fullName, List<string> job)
         {
-            AddDictionary(fullNames, keyOfDictionary, text1);
-            AddDictionary(jobs, keyOfDictionary, text2);
+            AddList(fullName, "Введите ФИО:");
+            AddList(job, "Введите должность:");
         }
 
-        static void ViewFile(Dictionary<int, string> fullNames, Dictionary<int, string> jobs)
+        static void ViewFile(List<string> fullName, List<string> job)
         {
             Console.WriteLine("Все досье:");
-            int keyOfDictionary = 0;
+            int index = 0;
 
-            for (int i = 0; i < fullNames.Count; i++)
+            for (int i = 0; i < fullName.Count; i++)
             {
-                Console.WriteLine($"{keyOfDictionary + 1}.{fullNames[keyOfDictionary]} - {jobs[keyOfDictionary]}");
-                keyOfDictionary++;
+                Console.WriteLine($"{index + 1}.{fullName[index]} - {job[index]}");
+                index++;
             }
         }
-
-        static void DeleteFile(Dictionary<int, string> fullNames, Dictionary<int, string> jobs)
+        
+        static void DeleteFile(List<string> fullName, List<string> job)
         {
             Console.WriteLine("Введите номер досье по индексу:");
-            int deletingKeyOfDictionary = int.Parse(Console.ReadLine()) - 1;
-            bool contains = fullNames.ContainsKey(deletingKeyOfDictionary);
+            int index = int.Parse(Console.ReadLine()) - 1;
+            ReplacePlaceInList(fullName, index);
+            ReplacePlaceInList(job, index);
+            fullName.RemoveAt(index);
+            job.RemoveAt(index);
+            Console.WriteLine("Досье успешно удаленно!");
 
-            if (contains)
-            {
-                DeleteDictionarys(fullNames, jobs, deletingKeyOfDictionary);
-                Console.WriteLine("Досье успешно удаленно!");
-            }
-            else
+            if (index > fullName.Count)
             {
                 Console.WriteLine("Такого досье нет!");
             }
         }
-        static void DeleteDictionarys(Dictionary<int, string> fullNames, Dictionary<int, string> jobs, int deletingKeyOfDictionary)
+
+        static void ReplacePlaceInList(List<string> someList, int index)
         {
-            if (deletingKeyOfDictionary == fullNames.Count - 1)
-            {
-                DeleteByKey(fullNames, jobs, deletingKeyOfDictionary);
-            }
-            else
-            {
-                DeleteByKey(fullNames, jobs, deletingKeyOfDictionary);
-                RemoveDictionarys(fullNames, jobs, deletingKeyOfDictionary);
-                DeleteByKey(fullNames, jobs, deletingKeyOfDictionary + 1);
-            }
+            someList[index] = someList[index + 1];
         }
 
-        static void RemoveDictionarys(Dictionary<int, string> fullNames, Dictionary<int, string> jobs, int deletingKeyOfDictionary)
-        {
-            fullNames[deletingKeyOfDictionary] = fullNames[deletingKeyOfDictionary + 1];
-            jobs[deletingKeyOfDictionary] = jobs[deletingKeyOfDictionary + 1];
-        }
-
-        static void DeleteByKey(Dictionary<int, string> fullNames, Dictionary<int, string> jobs, int deletingKeyOfDictionary)
-        {
-            fullNames.Remove(deletingKeyOfDictionary);
-            jobs.Remove(deletingKeyOfDictionary);
-        }
-
-        static void AddDictionary(Dictionary<int, string> dictionary, int keyOfDictionary, string text)
+        static void AddList(List<string> list, string text)
         {
             Console.WriteLine(text);
             string input = Console.ReadLine();
-            dictionary.Add(keyOfDictionary, input);
+            list.Add(input);
         }
     }
 }
