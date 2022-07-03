@@ -9,28 +9,27 @@ namespace Task5._4
         {
             bool isWork = true;
             int keyOfDictionary = 0;
-            Dictionary<int, string> fullName = new Dictionary<int, string>();
-            Dictionary<int, string> job = new Dictionary<int, string>();
+            Dictionary<int, string> fullNames = new Dictionary<int, string>();
+            Dictionary<int, string> jobs = new Dictionary<int, string>();
 
             while (isWork)
             {
                 Console.WriteLine("Выберите пункт меню: \n1.Добавить досье. \n2.Вывести досье. \n3.Удалить досье.\n4.Выход.");
-                int state = int.Parse(Console.ReadLine());
+                string state = Console.ReadLine();
 
                 switch (state)
                 {
-                    case 1:
-                        AddFile(fullName, keyOfDictionary, "Введите ФИО:");
-                        AddFile(job, keyOfDictionary, "Введите должность:");
+                    case "1":
+                        AddFile(fullNames, jobs, keyOfDictionary, "Введите ФИО:", "Введите должность:");
                         keyOfDictionary++;
                         break;
-                    case 2:
-                        ViewFile(fullName, job);
+                    case "2":
+                        ViewFile(fullNames, jobs);
                         break;
-                    case 3:
-                        DeleteFile(ref fullName, ref job);
+                    case "3":
+                        DeleteFile(fullNames, jobs);
                         break;
-                    case 4:
+                    case "4":
                         isWork = false;
                         break;
 
@@ -40,36 +39,33 @@ namespace Task5._4
             }
         }
 
-        static Dictionary<int, string> AddFile(Dictionary<int, string> dictionary, int keyOfDictionary, string text)
+        static void AddFile(Dictionary<int, string> fullNames, Dictionary<int, string> jobs, int keyOfDictionary, string text1, string text2)
         {
-            Console.WriteLine(text);
-            string input = Console.ReadLine();
-            dictionary.Add(keyOfDictionary, input);
-            return dictionary;
+            AddDictionary(fullNames, keyOfDictionary, text1);
+            AddDictionary(jobs, keyOfDictionary, text2);
         }
 
-        static void ViewFile(Dictionary<int, string> fullName, Dictionary<int, string> job)
+        static void ViewFile(Dictionary<int, string> fullNames, Dictionary<int, string> jobs)
         {
             Console.WriteLine("Все досье:");
             int keyOfDictionary = 0;
 
-            for (int i = 0; i < fullName.Count; i++)
+            for (int i = 0; i < fullNames.Count; i++)
             {
-                Console.WriteLine($"{keyOfDictionary + 1}.{fullName[keyOfDictionary]} - {job[keyOfDictionary]}");
+                Console.WriteLine($"{keyOfDictionary + 1}.{fullNames[keyOfDictionary]} - {jobs[keyOfDictionary]}");
                 keyOfDictionary++;
             }
         }
 
-        static void DeleteFile(ref Dictionary<int, string> fullName, ref Dictionary<int, string> job)
+        static void DeleteFile(Dictionary<int, string> fullNames, Dictionary<int, string> jobs)
         {
             Console.WriteLine("Введите номер досье по индексу:");
             int deletingKeyOfDictionary = int.Parse(Console.ReadLine()) - 1;
-            bool contains = fullName.ContainsKey(deletingKeyOfDictionary);
+            bool contains = fullNames.ContainsKey(deletingKeyOfDictionary);
 
             if (contains)
             {
-                DeleteByKey(fullName, deletingKeyOfDictionary);
-                DeleteByKey(job, deletingKeyOfDictionary);
+                DeleteDictionarys(fullNames, jobs, deletingKeyOfDictionary);
                 Console.WriteLine("Досье успешно удаленно!");
             }
             else
@@ -77,11 +73,37 @@ namespace Task5._4
                 Console.WriteLine("Такого досье нет!");
             }
         }
-
-        static Dictionary<int, string> DeleteByKey(Dictionary<int, string> dictionary, int deletingKeyOfDictionary)
+        static void DeleteDictionarys(Dictionary<int, string> fullNames, Dictionary<int, string> jobs, int deletingKeyOfDictionary)
         {
-            dictionary.Remove(deletingKeyOfDictionary);
-            return dictionary;
+            if (deletingKeyOfDictionary == fullNames.Count - 1)
+            {
+                DeleteByKey(fullNames, jobs, deletingKeyOfDictionary);
+            }
+            else
+            {
+                DeleteByKey(fullNames, jobs, deletingKeyOfDictionary);
+                RemoveDictionarys(fullNames, jobs, deletingKeyOfDictionary);
+                DeleteByKey(fullNames, jobs, deletingKeyOfDictionary + 1);
+            }
+        }
+
+        static void RemoveDictionarys(Dictionary<int, string> fullNames, Dictionary<int, string> jobs, int deletingKeyOfDictionary)
+        {
+            fullNames[deletingKeyOfDictionary] = fullNames[deletingKeyOfDictionary + 1];
+            jobs[deletingKeyOfDictionary] = jobs[deletingKeyOfDictionary + 1];
+        }
+
+        static void DeleteByKey(Dictionary<int, string> fullNames, Dictionary<int, string> jobs, int deletingKeyOfDictionary)
+        {
+            fullNames.Remove(deletingKeyOfDictionary);
+            jobs.Remove(deletingKeyOfDictionary);
+        }
+
+        static void AddDictionary(Dictionary<int, string> dictionary, int keyOfDictionary, string text)
+        {
+            Console.WriteLine(text);
+            string input = Console.ReadLine();
+            dictionary.Add(keyOfDictionary, input);
         }
     }
 }
